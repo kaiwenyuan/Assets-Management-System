@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESS-Lab Asset Management System</title>
+
+  <!--plugins-->
+  <link href="../static/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
+  <link href="../static/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet">
+  <link href="../static/plugins/simplebar/css/simplebar.css" rel="stylesheet">
+  <!--Styles-->
+  <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../static/css/icons.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="../static/css/main.css" rel="stylesheet">
+  <link href="../static/css/dark-theme.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+
+  <!--authentication-->
+
+  <div class="section-authentication-cover">
+    <div class="">
+      <div class="row g-0">
+
+        <div class="col-12 col-xl-7 col-xxl-8 auth-cover-left align-items-center justify-content-center d-none d-xl-flex bg-primary">
+
+          <div class="card rounded-0 mb-0 border-0 bg-transparent">
+            <div class="card-body">
+              <img src="../static/images/boxed-register.png" class="img-fluid auth-img-cover-login" width="650"
+                alt="">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
+          <div class="card rounded-0 m-3 border-0">
+            <div class="card-body p-sm-5">
+              <img src="../static/images/IntelLogo.png" class="mb-4" width="80" alt="">
+              <h4 class="fw-bold">Register Now</h4>
+              <p class="mb-0">Enter your credentials to create your account</p>
+
+              <div class="form-body mt-4">
+                <form class="row g-3">
+                  <div class="col-12">
+                    <label for="inputUsername" class="form-label">Username</label>
+                    <input type="email" class="form-control border-3" id="inputUsername" name="Username" placeholder="CESG ESS">
+                  </div>
+                  <div class="col-12">
+                    <label for="inputEmailAddress" class="form-label">Email Address</label>
+                    <input type="email" class="form-control border-3" id="inputEmailAddress" name="Email" placeholder="YourEmailAddress@intel.com">
+                  </div>
+                  <div class="col-12">
+                    <label for="inputChoosePassword" class="form-label">Password</label>
+                    <div class="input-group" id="show_hide_password">
+                      <input type="password" class="form-control border-end-0 border-3" id="inputChoosePassword" name="Password" placeholder="Enter Password">
+                       <a href="javascript:;" class="input-group-text bg-transparent border-3"><i class="bi bi-eye-slash-fill"></i></a>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="inputSelectCountry" class="form-label">Country</label>
+                    <select class="form-select border-3" id="inputSelectCountry" aria-label="Default select example">
+                      <option selected="">China</option>
+                      <option value="1">United Kingdom</option>
+                      <option value="2">America</option>
+                      <option value="3">India</option>
+                      <option value="4">Japan</option>
+                      <option value="5">Korea</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" onchange="toggleRegisterButton(this)">
+                      <label class="form-check-label" for="flexSwitchCheckChecked">I read and agree to Terms &amp; Conditions</label>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="d-grid">
+                      <button type="submit" class="btn btn-primary" id="registerButton" disabled>Register</button>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="text-start">
+                      <p class="mb-0">Already have an account? <a href="auth-cover-login.html">Sign in here</a></p>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+          </div>
+          </div>
+        </div>
+
+      </div>
+      <!--end row-->
+    </div>
+  </div>
+
+  <!--authentication-->
+
+
+
+
+  <!--plugins-->
+  <script src="../static/js/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $("#show_hide_password a").on('click', function (event) {
+        event.preventDefault();
+        if ($('#show_hide_password input').attr("type") == "text") {
+          $('#show_hide_password input').attr('type', 'password');
+          $('#show_hide_password i').addClass("bi-eye-slash-fill");
+          $('#show_hide_password i').removeClass("bi-eye-fill");
+        } else if ($('#show_hide_password input').attr("type") == "password") {
+          $('#show_hide_password input').attr('type', 'text');
+          $('#show_hide_password i').removeClass("bi-eye-slash-fill");
+          $('#show_hide_password i').addClass("bi-eye-fill");
+        }
+      });
+    });
+  </script>
+  <script>
+    function toggleRegisterButton(checkbox) {
+      var registerButton = document.getElementById("registerButton");
+      registerButton.disabled = !checkbox.checked;
+    }
+  </script>
+</body>
+
+</html>
