@@ -63,8 +63,8 @@ def user_login(username, password):
         return False
 
 
-def admin_login(username, password):
-    administrator = Admin.query.filter(and_(Admin.name == username, Admin.password == password)).first()
+def admin_login(email, password):
+    administrator = Admin.query.filter(and_(Admin.email == email, Admin.password == password)).first()
     if administrator:
         return True
     else:
@@ -74,20 +74,30 @@ def admin_login(username, password):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
-        Email = request.form.get('Email')
-        password = request.form.get('password')
-        print('data from Server', Email, password)
+        email = request.form.get('Email')
+        password = request.form.get('Password')
+        print('data from Server', email, password)
         # 访问数据库，查询验证数据
         with app.app_context():
-            if admin_login(Email, password):
-                flash("管理员" + Email + "登录成功")
+            if admin_login(email, password):
+                flash("管理员" + email + "登录成功")
                 return redirect('/admin')
-            elif user_login(Email, password):
-                flash("用户" + Email + "登录成功")
+            elif user_login(email, password):
+                flash("用户" + email + "登录成功")
                 return redirect('/user')
             else:
                 flash("用户名或密码错误")
     return render_template('auth-cover-login.html')
+
+
+@app.route('/forgotPassword', methods=['GET', 'POST'])
+def forgotPassword():
+    return render_template('auth-cover-forgot-password.html')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    return render_template('auth-cover-register.html')
 
 
 # 登录成功，跳转到管理员页面
@@ -128,8 +138,7 @@ def query_record():
     sn_ =data.get('SN', None)
     barcode_ =data.get('BarCode', None)
 
-    # 根据设备类型 和 设备状态 筛选记录
-    ## 多选，如果输入了该属性，将属性加入选择条件的列表
+    ##  复选条件，如果输入了该条件，将属性加入选择条件的列表
     conditions = []
     if type_:
         conditions.append(Asset.Type == type_)

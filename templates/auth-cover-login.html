@@ -49,7 +49,7 @@
               <p class="mb-0">Enter your credentials to login your account</p>
 
               <div class="form-body mt-4">
-                <form class="row g-3">
+                <form class="row g-3", action="/login", method="post">
                   <div class="col-12">
                     <label for="inputEmailAddress" class="form-label">Email</label>
                     <input type="email" class="form-control  border-3" id="inputEmailAddress" name="Email" placeholder="YourEmailAddress@intel.com">
@@ -67,16 +67,15 @@
                       <label class="form-check-label" for="flexSwitchCheckChecked">Remember Me</label>
                     </div>
                   </div>
-                  <div class="col-md-6 text-end">	<a href="auth-cover-forgot-password.html">Forgot Password ?</a>
-                  </div>
+                  <div class="col-md-6 text-end">	<a href="/forgotPassword">Forgot Password?</a> </div>
                   <div class="col-12">
                     <div class="d-grid">
-                      <button type="submit" class="btn  border-3 btn-primary">Login</button>
+                      <button type="submit" class="btn  border-3 btn-primary">Login</button>  <!-- 提交按钮，点击后将触发表单的提交动作 -->
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="text-start">
-                      <p class="mb-0">Don't have an account yet? <a href="auth-cover-register.html">Sign up here</a>
+                      <p class="mb-0">Don't have an account yet? <a href="/register">Sign up here</a>
                       </p>
                     </div>
                   </div>
