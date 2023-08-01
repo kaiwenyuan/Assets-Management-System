@@ -1,5 +1,4 @@
 import json
-
 from flask import Flask, render_template, request, redirect, flash, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, or_
@@ -10,19 +9,19 @@ app.secret_key = '\xc9ixnRb\xe40\xd4\xa5\x7f\x03\xd0y6\x01\x1f\x96\xeao+\x8a\x9f
 db = SQLAlchemy(app)
 
 
-# 新建模型
-class User(db.Model):  # 表名将会是 user（自动生成，小写处理）
+# 新建模型 用户、管理员、资产的ORM
+class User(db.Model):  # 表名将会是 user（自动生成，小写）
     id = db.Column(db.Integer, primary_key=True)  # 主键
-    name = db.Column(db.String(20))  # 名字
-    email = db.Column(db.String(60))  # 邮箱
-    password = db.Column(db.String(80))  # 密码
+    name = db.Column(db.String(20))
+    email = db.Column(db.String(60))
+    password = db.Column(db.String(80))
 
 
-class Admin(db.Model):  # 表名将会是 admin（自动生成，小写处理）
-    id = db.Column(db.Integer, primary_key=True)  # 主键
-    name = db.Column(db.String(20))  # 名字
-    email = db.Column(db.String(60))  # 邮箱
-    password = db.Column(db.String(80))  # 密码
+class Admin(db.Model):  # 表名将会是 admin（自动生成，小写）
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20))
+    email = db.Column(db.String(60))
+    password = db.Column(db.String(80))
 
 
 class Asset(db.Model):
@@ -103,7 +102,20 @@ def register():
 # 登录成功，跳转到管理员页面
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    return render_template('admin.html')
+    try:
+        # 将所有列名存到列表里
+        all_columns = [column.key for column in Asset.__table__.columns]
+        # 查询"Asset"表的所有数据
+        all_assets = Asset.query.all()
+        # 将查询到的数据转换为列表的列表格式
+        table_data = []
+        for asset in all_assets:
+            row_data = [getattr(asset, column) for column in all_columns]
+            table_data.append(row_data)
+    except Exception as e:
+        # 处理可能发生的错误, 打印错误信息
+        return jsonify({'error': str(e)}), 500
+    return render_template('ecommerce-products.html', table_data=table_data, table_columns=all_columns)
 
 
 # 登录成功，跳转到用户页面
@@ -123,22 +135,22 @@ def add_record():
     db.session.commit()
 
     # 整合数据成json格式
-    data = {'message': 'Record added successfully'}
+    data = {'message': 'Records are added successfully'}
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
 
-# 查询数据库记录
+# 根据条件筛选查询数据库记录
 @app.route('/query_record', methods=['POST'])
 def query_record():
     data = request.json
-    type_ =data.get('Type', None)
-    status_ =data.get('Status', None)
-    owner_ =data.get('Owner', None)
-    project_ =data.get('Project', None)
-    sn_ =data.get('SN', None)
-    barcode_ =data.get('BarCode', None)
+    type_ = data.get('Type', None)
+    status_ = data.get('Status', None)
+    owner_ = data.get('Owner', None)
+    project_ = data.get('Project', None)
+    sn_ = data.get('SN', None)
+    barcode_ = data.get('BarCode', None)
 
-    ##  复选条件，如果输入了该条件，将属性加入选择条件的列表
+# 复选条件，如果输入了该条件，将属性加入选择条件的列表
     conditions = []
     if type_:
         conditions.append(Asset.Type == type_)
@@ -186,8 +198,10 @@ def query_record():
     return Response(jsonify(asset_list), status=200, mimetype='application/json')
 
 
-# 删除数据库记录
+# 根据选择删除数据库记录
 # def del_record():
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
