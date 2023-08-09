@@ -39,23 +39,23 @@ class Admin(db.Model):  # table admin
 
 class Asset(db.Model):  # table asset
     AssetID = db.Column(db.String, primary_key=True)
+    AssetType = db.Column(db.String)
     Type = db.Column(db.String)
     Status = db.Column(db.String)
     Cost = db.Column(db.Integer)
     Owner = db.Column(db.String)
     ProjectID = db.Column(db.String)
     Project = db.Column(db.String)
-    Rack = db.Column(db.Integer)
+    Rack = db.Column(db.String)
     BarCode = db.Column(db.String)
     SN = db.Column(db.String)
     Model = db.Column(db.String)
     BMChostname = db.Column(db.String)
     IP = db.Column(db.String)
-    ChangeTime = db.Column(db.Integer)
+    ChangeTime = db.Column(db.String)
     Location = db.Column(db.String)
     ReleaseTime = db.Column(db.String)
     User = db.Column(db.String)
-    AssetType = db.Column(db.String)
     Vendor = db.Column(db.String)
     Comments = db.Column(db.String)
     Quantity = db.Column(db.Integer)
@@ -118,6 +118,7 @@ def login():
     return render_template('auth-cover-login.html')
 
 
+# TODO 忘记密码，修改用户密码
 @app.route('/forgotPassword', methods=['GET', 'POST'])
 def forgotPassword():
     return render_template('auth-cover-forgot-password.html')
@@ -153,7 +154,6 @@ def register():
     return render_template('auth-cover-register.html')
 
 
-# 登录成功，跳转到管理员页面
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     try:
@@ -161,9 +161,9 @@ def admin():
         all_columns = [column.key for column in Asset.__table__.columns]
         # 如果前端传输了数据的筛选条件
         if request.method == 'POST':
-            # 从表单中获取用户输入
+            # 从表单中获取用户输入的筛选条件
             # search_query = request.form['search_query']
-            # TODO 使用筛选条件查询数据库（按照特定列进行筛选，例如“asset_name”）
+            # TODO 使用筛选条件查询数据库
             # filtered_assets = Asset.query.filter(Asset.asset_name.like(f"%{search_query}%")).all()
             all_assets = query_record()
         else:
@@ -189,16 +189,38 @@ def user():
 # TODO: try-except
 @app.route('/add_record', methods=['POST'])
 def add_record():
-    data = request.json        # 获取json格式的数据
+    try:
+        data = request.json        # 从request中获取数据
     # TODO: add other attributes
-    new_asset = Asset()
-    new_asset.AssetID = data.get('AssetID')
-    new_asset.Type = data.get('Type', '')
-    change_time = get_formated_time()
-    new_asset.ChangeTime = change_time
-    db.session.add(new_asset)
-    db.session.commit()
+        new_asset = Asset()
+        new_asset.AssetID = data.get('AssetID')
+        new_asset.BarCode = data.get('BarCode', '')
+        new_asset.Bandwidth = data.get('Bandwidth', 0)
+        new_asset.BMChostname = data.get('BMChostname', '')
+        new_asset.Cost = data.get('Cost', 0)
+        new_asset.Comments = data.get('Comments', '')
+        new_asset.IP = data.get('IP', '')
+        new_asset.Owner = data.get('Owner', '(admin)')
+        new_asset.Project = data.get('Project', '')
+        new_asset.SN = data.get('SN', '')
+        new_asset.Type = data.get('Type', '')
+        new_asset.User = data.get('User', '')
+        new_asset.AssetType = data.get('AssetType', '')
+        new_asset.Status = data.get('Status', '')
+        new_asset.Location = data.get('Location', '')
+        new_asset.Model = data.get('Model', '')
+        new_asset.Rack = data.get('Rack', '')
+        new_asset.Quantity = data.get('Quantity', 0)
+        new_asset.Vendor = data.get('Vendor', '')
+        new_asset.ReleaseTime = data.get('ReleaseTime', '')
+        new_asset.ProjectID = data.get('ProjectID', '')
+        change_time = get_formated_time()
+        new_asset.ChangeTime = change_time
+        db.session.add(new_asset)
+        db.session.commit()
 
+    except Exception as e:
+        return jsonify({'message': '更新失败：' + str(e)}), 500
     # TODO: add into log table
     print(log_str)
 
@@ -210,12 +232,12 @@ def add_record():
 # 根据条件筛选查询数据库记录
 def query_record():
     data = request.json
-    type_ = data.get('Type', None)
-    status_ = data.get('Status', None)
-    owner_ = data.get('Owner', None)
-    project_ = data.get('Project', None)
-    sn_ = data.get('SN', None)
-    barcode_ = data.get('BarCode', None)
+    type_ = data.get('Type', '')
+    status_ = data.get('Status', '')
+    owner_ = data.get('Owner', '')
+    project_ = data.get('Project', '')
+    sn_ = data.get('SN', '')
+    barcode_ = data.get('BarCode', '')
 
 # 复选条件，如果输入了该条件，将属性加入选择条件的列表
     conditions = []
@@ -232,7 +254,7 @@ def query_record():
     if barcode_:
         conditions.append(Asset.BarCode == barcode_)
 
-    # 查询列表包含的条件
+    # 查询列表包含的条件的记录
     records = Asset.query.filter(and_(*conditions)).all()
     asset_list = []
     for asset_ in records:
@@ -271,12 +293,35 @@ def update_record():
         data = request.json
         AssetID = data.get("AssetID")
         record = Asset.query.filter_by(AssetID=AssetID).first()
-        # TODO: add more attributes
-        comments = data.get("Comments", "")
-        if comments:
-            record.Comments = comments
+        attributes = {
+            'Comments': '',
+            'BarCode': '',
+            'Bandwidth': 0,
+            'BMChostname': '',
+            'Cost': 0,
+            'IP': '',
+            'Owner': '(admin)',
+            'Project': '',
+            'SN': '',
+            'Type': '',
+            'User': '',
+            'AssetType': '',
+            'Status': '',
+            'Location': '',
+            'Model': '',
+            'Rack': '',
+            'Quantity': 0,
+            'Vendor': '',
+            'ProjectID': '',
+            'ReleaseTime': ''
+        }
+
         change_time = get_formated_time()
         record.ChangeTime = change_time
+
+        for attr, default_value in attributes.items():
+            new_value = data.get(attr, default_value)
+            setattr(record, attr, new_value)
         db.session.commit()
 
         # TODO: add into log table

@@ -593,13 +593,13 @@
      <main class="page-content">
        <!--breadcrumb-->
 		<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-			<div class="breadcrumb-title pe-3">eCommerce</div>
+			<div class="breadcrumb-title pe-3">ESS-Lab AMS</div>
 			<div class="ps-3">
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb mb-0 p-0">
 						<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
 						</li>
-						<li class="breadcrumb-item active" aria-current="page">Products</li>
+						<li class="breadcrumb-item active" aria-current="page">Lab Assets</li>
 					</ol>
 				</nav>
 			</div>
@@ -624,91 +624,170 @@
         <div class="row g-3">
           <div class="col-auto">
             <div class="position-relative">
-              <input class="form-control px-5" type="search" placeholder="Search Products">
+              <input class="form-control px-5" id="assetSearch" type="search" placeholder="Search Products">
               <span class="material-symbols-outlined position-absolute ms-3 translate-middle-y start-0 top-50 fs-5">search</span>
             </div>
           </div>
-          <div class="col-auto flex-grow-1 overflow-auto">
-            <div class="btn-group position-static">
-              <div class="btn-group position-static">
-                <button type="button" class="btn border btn-light dropdown-toggle px-4" data-bs-toggle="dropdown" aria-expanded="false">
-                  Detail
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="javascript:;">Project ID</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Project Name</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-                </ul>
-              </div>
-              <div class="btn-group position-static">
-                <button type="button" class="btn border btn-light dropdown-toggle px-4" data-bs-toggle="dropdown" aria-expanded="false">
-                  Privilege
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="javascript:;">Common User</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Administrator</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-                </ul>
-              </div>
-              <div class="btn-group position-static">
-                <button type="button" class="btn border btn-light dropdown-toggle px-4" data-bs-toggle="dropdown" aria-expanded="false">
-                  Others
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
+
           <div class="col-auto">
             <div class="d-flex align-items-center gap-2 justify-content-lg-end">
-               <button class="btn btn-light px-4"><i class="bi bi-box-arrow-right me-2"></i>Export</button>
-               <button class="btn btn-primary px-4"><i class="bi bi-plus-lg me-2"></i>Add Product</button>
+               <button class="btn btn-light px-4" onclick="exportToExcel()"><i class="bi bi-box-arrow-right me-2"></i>Export</button>
+               <button class="btn btn-primary px-4" ><i class="bi bi-plus-lg me-2"></i>Add Product</button>
+               <button class="btn btn-primary px-4" >Delete Product</button>
             </div>
           </div>
         </div><!--end row-->
 
-        <div class="card mt-4">
-          <div class="card-body">
-            <div class="product-table">
-              <div class="table-responsive white-space-nowrap">
-                 <table class="table align-middle">
-                  <thead class="table-light">
-                    <tr>
-                      {% for column in table_columns %}
-                      <th>
-                        <input class="form-check-input" type="checkbox">
-                      </th>
-                      <th>
-                        {{ column }}
-                      </th>
-                      {% endfor %}
-                    </tr>
-                   </thead>
-                   <tbody>
-                       {% for row in table_data %}
-                     <tr>
-                       <td>
-                         <input class="form-check-input" type="checkbox">
-                       </td>
-                       {% for value in row %}
-                       <td>
-                         {{ value }}
-                       </td>
-                       {% endfor %}
-                     </tr>
-                     {% endfor %}
-                   </tbody>
-                 </table>
-              </div>
-            </div>
-          </div>
-        </div>
+       <div class="card mt-4">
+         <div class="card-body">
+           <div class="product-table">
+             <div class="table-responsive white-space-nowrap">
+               <table class="table align-middle text-center" id="assetData">
+                 <thead class="table-light">
+                 <tr>
+                   <th>
+                     <!--<input class="form-check-input" type="checkbox">-->
+                   </th>
+                   <th>AssetID</th>
+                   <th>Type</th>
+                   <th>Status</th>
+                   <th>Cost</th>
+                   <th>Owner</th>
+                   <th>ProjectID</th>
+                   <th>Project</th>
+                   <th>Rack</th>
+                   <th>BarCode</th>
+                   <th>SN</th>
+                   <th>Model</th>
+                   <th>BMChostname</th>
+                   <th>IP</th>
+                   <th>ChangeTime</th>
+                   <th>Location</th>
+                   <th>ReleaseTime</th>
+                   <th>User</th>
+                   <th>AssetType</th>
+                   <th>Vendor</th>
+                   <th>Comments</th>
+                   <th>Quantity</th>
+                   <th>Bandwidth</th>
+                 </tr>
+                 <tr>
+                   <td>
+                     <button class="btn btn-primary" id="searchButton">Search</button>
+                   </td> <!-- Empty cell for the checkbox column -->
+
+                   <td>
+                     <input id="AssetIDInput" type="text" class="form-control" placeholder="Input AssetID">
+                   </td>
+                   <td>
+                     <input id="TypeInput" type="text" class="form-control" placeholder="Input Type">
+
+                   </td>
+                   <td>
+                     <select class="form-control" id="StatusInput">
+                       <option value="" selected>Select Status</option>
+                       <option value="available">available</option>
+                       <option value="unavailable">unavailable</option>
+                       <!-- Add more options as needed -->
+                     </select>
+
+                   </td>
+                   <td>
+                     <input id="CostInput" type="text" class="form-control" placeholder="Input Cost">
+
+                   </td>
+                   <td>
+                     <input id="OwnerInput" type="text" class="form-control" placeholder="Input Owner">
+
+                   </td>
+                   <td>
+                     <input id="ProjectIDInput" type="text" class="form-control" placeholder="Input ProjectID">
+
+                   </td>
+                   <td>
+                     <input id="ProjectInput" type="text" class="form-control" placeholder="Input Project">
+
+                   </td>
+                   <td>
+                     <input id="RackInput" type="text" class="form-control" placeholder="Input Rack">
+
+                   </td>
+                   <td>
+                     <input id="BarCodeInput" type="text" class="form-control" placeholder="Input BarCode">
+
+                   </td>
+                   <td>
+                     <input id="SNInput" type="text" class="form-control" placeholder="Input SN">
+
+                   </td>
+                   <td>
+                     <input id="ModelInput" type="text" class="form-control" placeholder="Input Model">
+
+                   </td>
+                   <td>
+                     <input id="BMChostnameInput" type="text" class="form-control" placeholder="Input BMChostname">
+
+                   </td>
+                   <td>
+                     <input id="IPInput" type="text" class="form-control" placeholder="Input IP">
+
+                   </td>
+                   <td>
+                     <input id="ChangeTimeInput" type="text" class="form-control" placeholder="Input ChangeTime">
+
+                   </td>
+                   <td>
+                     <input id="LocationInput" type="text" class="form-control" placeholder="Input Location">
+
+                   </td>
+                   <td>
+                     <input id="ReleaseTimeInput" type="text" class="form-control" placeholder="Input ReleaseTime">
+
+                   </td>
+                   <td>
+                     <input id="UserInput" type="text" class="form-control" placeholder="Input User">
+
+                   </td>
+                   <td>
+                     <input id="AssetTypeInput" type="text" class="form-control" placeholder="Input AssetType">
+
+                   </td>
+                   <td>
+                     <input id="VendorInput" type="text" class="form-control" placeholder="Input Vendor">
+
+                   </td>
+                   <td>
+                     <input id="CommentsInput" type="text" class="form-control" placeholder="Input Comments">
+
+                   </td>
+                   <td>
+                     <input id="QuantityInput"type="text" class="form-control" placeholder="Input Quantity">
+
+                   </td>
+                   <td>
+                     <input id="BandwidthInput"type="text" class="form-control" placeholder="Input Bandwidth">
+
+                   </td>
+                 </tr>
+                 </thead>
+
+                 <tbody>
+                 {% for row in table_data %}
+                 <tr>
+                   <td>
+                     <input class="form-check-input" type="checkbox">
+                   </td>
+                   {% for value in row %}
+                   <td>{{value}}</td>
+                   {% endfor %}
+                 </tr>
+                 {% endfor %}
+                 </tbody>
+               </table>
+             </div>
+           </div>
+         </div>
+       </div>
 
      </main>
      <!--end main content-->
@@ -724,7 +803,7 @@
         <div class="modal-content">
           <div class="modal-header gap-2">
             <div class="position-relative popup-search w-100">
-              <input class="form-control form-control-lg ps-5 border border-3 border-primary" type="search" id="Search" onkeyup="filterTable()" placeholder="Search">
+              <input class="form-control form-control-lg ps-5 border border-3 border-primary" type="search" onkeyup="filterTable()" placeholder="Search">
               <span class="material-symbols-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
             </div>
             <button type="button" class="btn-close d-xl-none" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -810,13 +889,123 @@
     <!--BS Scripts-->
     <script src="../static/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+
+    <script>
+      var searchButton = document.getElementById("searchButton");
+
+      // 在点击搜索按钮时执行操作
+      searchButton.addEventListener("click", function() {
+        var assetIDValue = document.getElementById("AssetIDInput").value;
+        var typeValue = document.getElementById("TypeInput").value;
+        var statusValue = document.getElementById("StatusInput").value;
+        var costValue = document.getElementById("CostInput").value;
+        var ownerValue = document.getElementById("OwnerInput").value;
+        var projectIDValue = document.getElementById("ProjectIDInput").value;
+        var projectValue = document.getElementById("ProjectInput").value;
+        var rackValue = document.getElementById("RackInput").value;
+        var barcodeValue = document.getElementById("BarCodeInput").value;
+        var snValue = document.getElementById("SNInput").value;
+        var modelValue = document.getElementById("ModelInput").value;
+        var bmchostnameValue = document.getElementById("BMChostnameInput").value;
+        var ipValue = document.getElementById("IPInput").value;
+        var changeTimeValue = document.getElementById("ChangeTimeInput").value;
+        var locationValue = document.getElementById("LocationInput").value;
+        var releaseTimeValue = document.getElementById("ReleaseTimeInput").value;
+        var userValue = document.getElementById("UserInput").value;
+        var assetTypeValue = document.getElementById("AssetTypeInput").value;
+        var vendorValue = document.getElementById("VendorInput").value;
+        var commentsValue = document.getElementById("CommentsInput").value;
+        var quantityValue = document.getElementById("QuantityInput").value;
+        var bandwidthValue = document.getElementById("BandwidthInput").value;
+
+        // 构建发送到后端的数据对象
+        var searchData = {
+          "AssetID": assetIDValue,
+          "Type": typeValue,
+          "Status": statusValue,
+          "Cost": costValue,
+          "Owner": ownerValue,
+          "ProjectID": projectIDValue,
+          "Project": projectValue,
+          "Rack": rackValue,
+          "BarCode": barcodeValue,
+          "SN": snValue,
+          "Model": modelValue,
+          "BMChostname": bmchostnameValue,
+          "IP": ipValue,
+          "ChangeTime": changeTimeValue,
+          "Location": locationValue,
+          "ReleaseTime": releaseTimeValue,
+          "User": userValue,
+          "AssetType": assetTypeValue,
+          "Vendor": vendorValue,
+          "Comments": commentsValue,
+          "Quantity": quantityValue,
+          "Bandwidth": bandwidthValue
+        };
+
+        // 发送数据到后端
+        fetch("/query_asset", {
+          method: "POST",
+          body: JSON.stringify(searchData),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(response => {
+          // 处理后端响应
+          // 可能需要更新前端页面内容
+        });
+      });
+    </script>
+
+    <script>
+      function exportToExcel() {
+        var originalTable = document.getElementById("assetData");
+        var clonedTable = originalTable.cloneNode(true);
+        var clonedRows = clonedTable.getElementsByTagName("tr");
+
+        // 移除克隆表格的第二行（索引为 1）
+        if (clonedRows.length > 1) {
+          clonedTable.deleteRow(1);
+        }
+
+        var wb;
+
+        // 检查表格是否为空
+        if (clonedRows.length <= 1) {
+          // 表格为空，创建一个空的工作簿
+          wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([[]]), "SheetJS");
+        } else {
+          // 表格不为空，正常导出
+          wb = XLSX.utils.table_to_book(clonedTable, { sheet: "SheetJS" });
+        }
+
+        var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+        function s2ab(s) {
+          var buf = new ArrayBuffer(s.length);
+          var view = new Uint8Array(buf);
+          for (var i = 0; i < s.length; i++) {
+            view[i] = s.charCodeAt(i) & 0xFF;
+          }
+          return buf;
+        }
+
+        var blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+        saveAs(blob, "Asset_data.xlsx");
+      }
+    </script>
     <script>
       function filterTable() {
         // 获取输入框中的筛选条件
         var input, filter, table, tr, td, i, j, txtValue;
-        input = document.getElementById("searchInput");
+        input = document.getElementById("assetSearch");
         filter = input.value.toUpperCase();
-        table = document.getElementById("dataTable");
+        table = document.getElementById("assetData");
         tr = table.getElementsByTagName("tr");
 
         // 遍历每一行，如果某一行的数据包含筛选条件，则显示该行，否则隐藏该行

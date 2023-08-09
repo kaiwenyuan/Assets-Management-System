@@ -16,7 +16,7 @@ a {
 }
 
 
-/* header ¸ü¶àÏÂÔØ£ºhttp://www.bootstrapmb.com */
+/* header ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½http://www.bootstrapmb.com */
 
 .top-header .navbar {
     position: fixed;
@@ -903,7 +903,7 @@ a {
 .customer-table table thead,
 .product-table table thead {
     font-size: 0.8rem;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: 500;
 }
 
