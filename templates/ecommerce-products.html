@@ -686,8 +686,9 @@
                    <td>
                      <select class="form-control" id="StatusInput">
                        <option value="" selected>Select Status</option>
-                       <option value="available">available</option>
-                       <option value="unavailable">unavailable</option>
+                       <option value="Available">Available</option>
+                       <option value="Existing">Existing</option>
+                       <option value="In Use">In Use</option>
                        <!-- Add more options as needed -->
                      </select>
 
@@ -771,7 +772,7 @@
                  </tr>
                  </thead>
 
-                 <tbody>
+                 <tbody id="searchBody">
                  {% for row in table_data %}
                  <tr>
                    <td>
@@ -947,6 +948,7 @@
           "Bandwidth": bandwidthValue
         };
 
+        const searchBody = document.getElementById('tableBody');
         // 发送数据到后端
         fetch("/query_asset", {
           method: "POST",
@@ -954,11 +956,23 @@
           headers: {
             "Content-Type": "application/json"
           }
-        }).then(response => {
-          // 处理后端响应
-          // 可能需要更新前端页面内容
+        }).then(Response => {
+          return Response.json();
+        }).then(data => {
+          // 更新表格
+          searchBody.innerHTML = ''; // 清空原表
+          data.forEach(rowData => {
+            const row = document.createElement('tr');
+            Object.values(rowData).forEach(value => {
+              const cell = document.createElement('td');
+              cell.textContent = value;
+              row.appendChild(cell);
+            });
+            searchBody.appendChild(row);
         });
+          alert("Success!");
       });
+    });
     </script>
 
     <script>

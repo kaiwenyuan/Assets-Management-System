@@ -52,14 +52,14 @@ class Asset(db.Model):  # table asset
     Model = db.Column(db.String)
     BMChostname = db.Column(db.String)
     IP = db.Column(db.String)
-    ChangeTime = db.Column(db.String)
     Location = db.Column(db.String)
-    ReleaseTime = db.Column(db.String)
     User = db.Column(db.String)
     Vendor = db.Column(db.String)
     Comments = db.Column(db.String)
     Quantity = db.Column(db.Integer)
     Bandwidth = db.Column(db.Integer)
+    ChangeTime = db.Column(db.String)
+    ReleaseTime = db.Column(db.String)
 
 
 def user_login(username, password):
@@ -228,8 +228,7 @@ def add_record():
     data = {'message': 'Records are added successfully'}
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
-@app.route('/query_asset', methods=['POST'])
-# 根据条件筛选查询数据库记录
+@app.route('/query_asset', methods=['POST', 'GET'])
 def query_record():
     data = request.json
     type_ = data.get('Type', '')
@@ -284,7 +283,7 @@ def query_record():
             # 添加其他字段...
         }
         asset_list.append(record_data)
-    return Response(jsonify(asset_list), status=200, mimetype='application/json')
+    return jsonify(asset_list)
 
 
 @app.route('/update_asset', methods=['POST'])
