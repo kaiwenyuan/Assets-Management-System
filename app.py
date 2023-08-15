@@ -2,7 +2,7 @@ import json
 import datetime
 from flask import Flask, render_template, request, redirect, flash, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import and_, or_, event
+from sqlalchemy import and_, DateTime, event, func
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -62,9 +62,15 @@ class Asset(db.Model):  # table asset
     ReleaseTime = db.Column(db.String)
 
 
+class Log(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True )
+    log = db.Column(db.String)
+    timestamp = db.Column(db.DateTime, default=func.now())
+
+
 def user_login(username, password):
-    user = User.query.filter(and_(User.name == username, User.password == password)).first()
-    if user:
+    current_user = User.query.filter(and_(User.name == username, User.password == password)).first()
+    if current_user:
         return True
     else:
         return False
@@ -77,7 +83,7 @@ def admin_login(email, password):
     else:
         return False
 
-
+# 添加listener,对增删改查的操作监听并写入log表
 @event.listens_for(db.session, 'before_flush')
 def log_changes(session, flush_context, instances):
     global log_str
@@ -159,11 +165,11 @@ def admin():
     try:
         # 将所有列名存到列表里
         all_columns = [column.key for column in Asset.__table__.columns]
-        # 如果前端传输了数据的筛选条件
+        # 如果前端传输了数据筛选条件
         if request.method == 'POST':
             # 从表单中获取用户输入的筛选条件
             # search_query = request.form['search_query']
-            # TODO 使用筛选条件查询数据库
+            # TODO 逻辑问题
             # filtered_assets = Asset.query.filter(Asset.asset_name.like(f"%{search_query}%")).all()
             all_assets = query_record()
         else:
@@ -191,7 +197,6 @@ def user():
 def add_record():
     try:
         data = request.json        # 从request中获取数据
-    # TODO: add other attributes
         new_asset = Asset()
         new_asset.AssetID = data.get('AssetID')
         new_asset.BarCode = data.get('BarCode', '')
@@ -218,15 +223,15 @@ def add_record():
         new_asset.ChangeTime = change_time
         db.session.add(new_asset)
         db.session.commit()
-
+        new_log = Log()
+        new_log.log = log_str
+        db.session.add(new_log)
+        db.session.commit()
     except Exception as e:
         return jsonify({'message': '更新失败：' + str(e)}), 500
-    # TODO: add into log table
-    print(log_str)
-
-    # 整合数据成json格式
     data = {'message': 'Records are added successfully'}
     return Response(json.dumps(data), status=200, mimetype='application/json')
+
 
 @app.route('/query_asset', methods=['POST', 'GET'])
 def query_record():
@@ -322,11 +327,11 @@ def update_record():
             new_value = data.get(attr, default_value)
             setattr(record, attr, new_value)
         db.session.commit()
-
-        # TODO: add into log table
-        userID = data.get('userID')
-        print(log_str)
-
+        # add into log table
+        new_log = Log()
+        new_log.log = log_str
+        db.session.add(new_log)
+        db.session.commit()
         return jsonify({'message': '记录已成功更新'})
     except SQLAlchemyError as e:
         db.session.rollback()  # 回滚事务
@@ -353,7 +358,10 @@ def delete_record():
         change_time = get_formated_time()
         log_list = log_str.split(',')
         for log in log_list:
-            print(log)
+            new_log = Log()
+            new_log.log = log
+            db.session.add(new_log)
+            db.session.commit()
 
         return jsonify({'message': '记录已成功删除'})
     except SQLAlchemyError as e:
