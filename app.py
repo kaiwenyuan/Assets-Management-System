@@ -250,7 +250,7 @@ def query_record():
     if status_:
         conditions.append(Asset.Status == status_)
     if owner_:
-        conditions.append(Asset.Owner == status_)
+        conditions.append(Asset.Owner == owner_)
     if project_:
         conditions.append(Asset.Project == project_)
     if sn_:
