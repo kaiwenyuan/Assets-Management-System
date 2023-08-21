@@ -49,7 +49,7 @@
               <p class="mb-0">Enter your credentials to create your account</p>
 
               <div class="form-body mt-4">
-                <form class="row g-3" action="/register", method="post">
+                <form class="row g-3" id="registerForm">
                   <div class="col-12">
                     <label for="inputUsername" class="form-label">Username</label>
                     <input type="text" class="form-control border-3" id="inputUsername" name="Username" placeholder="CESG ESS">
@@ -99,6 +99,34 @@
 
   <!--plugins-->
   <script src="../static/js/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#registerButton').click(function() {
+        event.preventDefault();
+        const formData = $('#registerForm').serialize();
+        // 发送 POST
+        $.ajax({
+          type: 'POST',
+          url: '/register',
+          data: formData,
+          success: function(response) {
+            if (response.status === "success") {
+              alert(response.message);
+              window.location.href = "login";
+            } else if (response.status === "failed") {
+              alert(response.message);
+              $('#inputUsername').val($('#inputUsername').val());
+              $('#inputEmailAddress').val($('#inputEmailAddress').val());
+              $('#inputChoosePassword').val($('#inputChoosePassword').val());
+                    }
+            }
+        });
+      });
+    });
+  </script>
+
+
 
   <script>
     $(document).ready(function () {

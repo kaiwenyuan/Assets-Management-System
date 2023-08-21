@@ -127,6 +127,19 @@ def login():
 # TODO 忘记密码，修改用户密码
 @app.route('/forgotPassword', methods=['GET', 'POST'])
 def forgotPassword():
+    if request.method == 'POST':
+        user_email = request.form['Email']
+        new_password = request.form['Password']
+        # existing user
+        exist_user = Admin.query.filter_by(email=user_email).first()
+        if exist_user:
+            exist_user.password = new_password
+        else:
+            response = {
+                "status": "failed",
+                "message": "User with this email doesn't exist, please check your email or sign up a new one."
+            }
+            return jsonify(response)
     return render_template('auth-cover-forgot-password.html')
 
 
@@ -165,16 +178,7 @@ def admin():
     try:
         # 将所有列名存到列表里
         all_columns = [column.key for column in Asset.__table__.columns]
-        # 如果前端传输了数据筛选条件
-        if request.method == 'POST':
-            # 从表单中获取用户输入的筛选条件
-            # search_query = request.form['search_query']
-            # TODO 逻辑问题
-            # filtered_assets = Asset.query.filter(Asset.asset_name.like(f"%{search_query}%")).all()
-            all_assets = query_record()
-        else:
-            # 如果是GET请求或未提供输入，则获取所有资产信息
-            all_assets = Asset.query.all()
+        all_assets = Asset.query.all()
         # 将查询到的数据转换为列表的列表格式
         table_data = []
         for asset in all_assets:
@@ -354,8 +358,6 @@ def delete_record():
         db.session.commit()
 
         # TODO: add into log table
-        userID = data.get('userID')
-        change_time = get_formated_time()
         log_list = log_str.split(',')
         for log in log_list:
             new_log = Log()

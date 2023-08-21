@@ -13,7 +13,7 @@
 	<link href="../static/css/pace.min.css" rel="stylesheet">
 	<script src="../static/js/pace.min.js"></script>
     <!--Styles-->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/backupbootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../static/css/icons.css">
 
@@ -33,10 +33,12 @@
           <div class="btn-toggle-menu">
             <span class="material-symbols-outlined">menu</span>
           </div>
+        <!--
           <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <input class="form-control form-control-sm rounded-5 px-5" disabled type="search" placeholder="Search">
             <span class="material-symbols-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
           </div>
+          -->
             <ul class="navbar-nav top-right-menu gap-2">
               <li class="nav-item d-lg-none d-block" data-bs-toggle="modal" data-bs-target="#exampleModal">
                  <a class="nav-link" href="javascript:;"><span class="material-symbols-outlined">
@@ -237,67 +239,15 @@
               <!--navigation-->
               <ul class="metismenu" id="menu">
                 <li>
-                  <a href="index.html">
-                    <div class="parent-icon"><span class="material-symbols-outlined">home</span>
-                    </div>
-                    <div class="menu-title">Dashboard</div>
-                  </a>
-                </li>
-                <li>
-                  <a href="javascript:;" class="has-arrow">
-                    <div class="parent-icon"><span class="material-symbols-outlined">apps</span>
-                    </div>
-                    <div class="menu-title">Application</div>
-                  </a>
-                  <ul>
-                    <li> <a href="app-emailbox.html"><span class="material-symbols-outlined">arrow_right</span>Email</a>
-                    </li>
-                    <li> <a href="app-chat-box.html"><span class="material-symbols-outlined">arrow_right</span>Chat Box</a>
-                    </li>
-                    <li> <a href="app-file-manager.html"><span class="material-symbols-outlined">arrow_right</span>File Manager</a>
-                    </li>
-                    <li> <a href="app-contact-list.html"><span class="material-symbols-outlined">arrow_right</span>Contatcs</a>
-                    </li>
-                    <li> <a href="app-to-do.html"><span class="material-symbols-outlined">arrow_right</span>Todo List</a>
-                    </li>
-                    <li> <a href="app-invoice.html"><span class="material-symbols-outlined">arrow_right</span>Invoice</a>
-                    </li>
-                    <li> <a href="app-fullcalender.html"><span class="material-symbols-outlined">arrow_right</span>Calendar</a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="menu-label">UI Elements</li>
-                <li>
-                  <a href="javascript:;" class="has-arrow">
-                    <div class="parent-icon"><span class="material-symbols-outlined">widgets</span>
-                    </div>
-                    <div class="menu-title">Widgets</div>
-                  </a>
-                  <ul>
-                    <li> <a href="widget-data.html"><span class="material-symbols-outlined">arrow_right</span>Data Widget</a>
-                    </li>
-                    <li> <a href="widget-static.html"><span class="material-symbols-outlined">arrow_right</span>Widget Static</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
                   <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><span class="material-symbols-outlined">shopping_cart</span>
                     </div>
-                    <div class="menu-title">eCommerce</div>
+                    <div class="menu-title">ESS Lab Asset</div>
                   </a>
                   <ul>
-                    <li> <a href="ecommerce-add-product.html"><span class="material-symbols-outlined">arrow_right</span>Add Product</a>
+                    <li> <a href="ecommerce-products2.html"><span class="material-symbols-outlined">arrow_right</span>Edit Products</a>
                     </li>
-                    <li> <a href="ecommerce-products.html"><span class="material-symbols-outlined">arrow_right</span>Products</a>
-                    </li>
-                    <li> <a href="ecommerce-customers.html"><span class="material-symbols-outlined">arrow_right</span>Customers</a>
-                    </li>
-                    <li> <a href="ecommerce-customer-details.html"><span class="material-symbols-outlined">arrow_right</span>Customer Details</a>
-                    </li>
-                    <li> <a href="ecommerce-orders.html"><span class="material-symbols-outlined">arrow_right</span>Orders</a>
-                    </li>
-                    <li> <a href="ecommerce-customer-details.html"><span class="material-symbols-outlined">arrow_right</span>Order Details</a>
+                    <li> <a href="ecommerce-products.html"><span class="material-symbols-outlined">arrow_right</span>Asset Search</a>
                     </li>
                   </ul>
                 </li>
@@ -620,11 +570,10 @@
 		<!--end breadcrumb-->
 
 
-
         <div class="row g-3">
           <div class="col-auto">
             <div class="position-relative">
-              <input class="form-control px-5" id="assetSearch" type="search" placeholder="Search Products">
+              <input class="form-control px-5" style="width: 100%;" id="assetSearch" type="search" onkeyup="filterTable()" placeholder="Search Products">
               <span class="material-symbols-outlined position-absolute ms-3 translate-middle-y start-0 top-50 fs-5">search</span>
             </div>
           </div>
@@ -642,13 +591,19 @@
          <div class="card-body">
            <div class="product-table">
              <div class="table-responsive white-space-nowrap">
+
                <table class="table align-middle text-center" id="assetData">
                  <thead class="table-light">
                  <tr>
                    <th>
-                     <!--<input class="form-check-input" type="checkbox">-->
+                     <div id="pagination">
+                       <a id="prevPageButton"></a>
+                       <span id="pageButtons"></span>
+                       <a id="nextPageButton"></a>
+                     </div>
                    </th>
                    <th>AssetID</th>
+                   <th>AssetType</th>
                    <th>Type</th>
                    <th>Status</th>
                    <th>Cost</th>
@@ -661,14 +616,13 @@
                    <th>Model</th>
                    <th>BMChostname</th>
                    <th>IP</th>
-                   <th>ChangeTime</th>
                    <th>Location</th>
-                   <th>ReleaseTime</th>
                    <th>User</th>
-                   <th>AssetType</th>
                    <th>Vendor</th>
                    <th>Comments</th>
                    <th>Quantity</th>
+                   <th>ChangeTime</th>
+                   <th>ReleaseTime</th>
                    <th>Bandwidth</th>
                  </tr>
                  <tr>
@@ -679,6 +633,12 @@
                    <td>
                      <input id="AssetIDInput" type="text" class="form-control" placeholder="Input AssetID">
                    </td>
+
+                   <td>
+                     <input id="AssetTypeInput" type="text" class="form-control" placeholder="Input AssetType">
+
+                   </td>
+
                    <td>
                      <input id="TypeInput" type="text" class="form-control" placeholder="Input Type">
 
@@ -733,26 +693,17 @@
                      <input id="IPInput" type="text" class="form-control" placeholder="Input IP">
 
                    </td>
-                   <td>
-                     <input id="ChangeTimeInput" type="text" class="form-control" placeholder="Input ChangeTime">
 
-                   </td>
                    <td>
                      <input id="LocationInput" type="text" class="form-control" placeholder="Input Location">
 
                    </td>
-                   <td>
-                     <input id="ReleaseTimeInput" type="text" class="form-control" placeholder="Input ReleaseTime">
 
-                   </td>
                    <td>
                      <input id="UserInput" type="text" class="form-control" placeholder="Input User">
 
                    </td>
-                   <td>
-                     <input id="AssetTypeInput" type="text" class="form-control" placeholder="Input AssetType">
 
-                   </td>
                    <td>
                      <input id="VendorInput" type="text" class="form-control" placeholder="Input Vendor">
 
@@ -766,17 +717,26 @@
 
                    </td>
                    <td>
+                     <input id="ChangeTimeInput" type="text" class="form-control" placeholder="Input ChangeTime">
+
+                   </td>
+                   <td>
+                     <input id="ReleaseTimeInput" type="text" class="form-control" placeholder="Input ReleaseTime">
+
+                   </td>
+                   <td>
                      <input id="BandwidthInput"type="text" class="form-control" placeholder="Input Bandwidth">
 
                    </td>
                  </tr>
                  </thead>
 
-                 <tbody id="searchBody">
+                 <tbody id="tableBody">
                  {% for row in table_data %}
                  <tr>
                    <td>
-                     <input class="form-check-input" type="checkbox">
+                     <!--<input class="form-check-input" type="checkbox">-->
+                     <a href="/login">Apply for it</a>
                    </td>
                    {% for value in row %}
                    <td>{{value}}</td>
@@ -785,7 +745,9 @@
                  {% endfor %}
                  </tbody>
                </table>
+
              </div>
+           </div>
            </div>
          </div>
        </div>
@@ -794,17 +756,15 @@
      <!--end main content-->
 
 
-    <!--start overlay-->
+    <!--start overlay -->
       <div class="overlay btn-toggle-menu"></div>
-    <!--end overlay-->
-
-    <!-- Search Modal -->
+    <!--
     <div class="modal" id="exampleModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header gap-2">
             <div class="position-relative popup-search w-100">
-              <input class="form-control form-control-lg ps-5 border border-3 border-primary" type="search" onkeyup="filterTable()" placeholder="Search">
+              <input class="form-control form-control-lg ps-5 border border-3 border-primary" style="width: 100%;" type="search" placeholder="Search">
               <span class="material-symbols-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
             </div>
             <button type="button" class="btn-close d-xl-none" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -844,7 +804,7 @@
         </div>
       </div>
     </div>
-
+ -->
 
 
     <!--start theme customization-->
@@ -894,7 +854,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 
-    <script>
+    <script>//主体条件搜索
       var searchButton = document.getElementById("searchButton");
 
       // 在点击搜索按钮时执行操作
@@ -956,26 +916,52 @@
           headers: {
             "Content-Type": "application/json"
           }
-        }).then(Response => {
-          return Response.json();
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error("Network response error");
+          }
+          return response.json();
         }).then(data => {
-          // 更新表格
-          searchBody.innerHTML = ''; // 清空原表
-          data.forEach(rowData => {
+          const sortedColumns = [
+            'AssetID', 'AssetType', 'Type', 'Status', 'Cost', 'Owner',
+            'ProjectID', 'Project', 'Rack', 'BarCode', 'SN', 'Model',
+            'BMChostname', 'IP', 'Location', 'User', 'Vendor', 'Comments',
+            'Quantity', 'ChangeTime', 'ReleaseTime', 'Bandwidth'];
+          const fragment = document.createDocumentFragment(); // 创建文档片段
+          // 对从后端获取的数据重新排序
+          const sortedData = data.map(rowData => {
+            const sortedRowData = {};
+            sortedColumns.forEach(column => {
+              sortedRowData[column] = rowData[column];
+            });
+            return sortedRowData;
+          });
+          searchBody.innerHTML = '';
+          sortedData.forEach(rowData => {
             const row = document.createElement('tr');
-            Object.values(rowData).forEach(value => {
+            const checkboxCell = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.className = 'form-check-input';
+            checkbox.type = 'checkbox';
+            checkboxCell.appendChild(checkbox);
+            row.appendChild(checkboxCell);
+
+            sortedColumns.forEach(column => {
               const cell = document.createElement('td');
-              cell.textContent = value;
+              cell.textContent = rowData[column];
               row.appendChild(cell);
             });
-            searchBody.appendChild(row);
+            fragment.appendChild(row); // 将行添加到文档片段中
         });
+          searchBody.appendChild(fragment);
           alert("Success!");
-      });
+      }).catch(error => {
+          console.error("Error:", error);
+        });
     });
     </script>
 
-    <script>
+    <script>//导出为excel
       function exportToExcel() {
         var originalTable = document.getElementById("assetData");
         var clonedTable = originalTable.cloneNode(true);
@@ -1013,7 +999,96 @@
         saveAs(blob, "Asset_data.xlsx");
       }
     </script>
-    <script>
+
+    <script>//分页功能
+    let currentPage = 1; // 当前页码，默认为1
+    const itemsPerPage = 10; // 每页显示的数据量
+    const totalItems = {{ table_data|length }}; // 数据总量，使用模板引擎获取数据长度
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    // 总页
+
+    // 根据当前页码和数据显示对应的数据页
+    function displayPage(currentPage) {
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+
+      // 获取所有行的元素
+      const rows = document.querySelectorAll('#tableBody tr');
+
+      // 遍历所有行，根据当前页码设置显示或隐藏
+      rows.forEach((row, index) => {
+        if (index >= startIndex && index < endIndex) {
+          row.style.display = ''; // 显示行
+        } else {
+          row.style.display = 'none'; // 隐藏行
+        }
+      });
+    }
+
+    function updatePaginationButtons() {
+      const pageButtons = document.getElementById('pageButtons');
+      pageButtons.innerHTML = '';
+
+      const prevPageButton = document.createElement('a');
+      prevPageButton.href = '#';
+      prevPageButton.style.fontSize = '12.8px';
+      prevPageButton.textContent = '<  ';
+      prevPageButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          displayPage(currentPage);
+          updatePaginationButtons();
+        }
+      });
+      pageButtons.appendChild(prevPageButton);
+
+      // 显示当前页码
+      const currentPageElement = document.createElement('span');
+      currentPageElement.style.fontSize = '12.8px';
+      currentPageElement.textContent = currentPage;
+      pageButtons.appendChild(currentPageElement);
+
+      const nextPageButton = document.createElement('a');
+      nextPageButton.href = '#';
+      nextPageButton.style.fontSize = '12.8px';
+      nextPageButton.textContent = '  >';
+      nextPageButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          displayPage(currentPage);
+          updatePaginationButtons();
+        }
+      });
+      pageButtons.appendChild(nextPageButton);
+    }
+
+
+    // 初始化页面时显示第一页数据
+    displayPage(currentPage);
+
+    // 初始化分页按钮
+    updatePaginationButtons();
+
+    // 上一页按钮点击事件
+    document.getElementById('prevPageButton').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        displayPage(currentPage);
+        updatePaginationButtons();
+      }
+    });
+
+    // 下一页按钮点击事件
+    document.getElementById('nextPageButton').addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        displayPage(currentPage);
+        updatePaginationButtons();
+      }
+    });
+    </script>
+
+    <script>//单前端搜索
       function filterTable() {
         // 获取输入框中的筛选条件
         var input, filter, table, tr, td, i, j, txtValue;
@@ -1023,7 +1098,7 @@
         tr = table.getElementsByTagName("tr");
 
         // 遍历每一行，如果某一行的数据包含筛选条件，则显示该行，否则隐藏该行
-        for (i = 1; i < tr.length; i++) { // 从1开始，跳过表头行
+        for (i = 2; i < tr.length; i++) { // 从1开始，跳过表头行
           var displayRow = false; // 默认隐藏行
           td = tr[i].getElementsByTagName("td");
           for (j = 0; j < td.length; j++) {
