@@ -1,66 +1,71 @@
-import json
+import json, psycopg2
 import datetime
 from flask import Flask, render_template, request, redirect, flash, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, DateTime, event, func
 from sqlalchemy.exc import SQLAlchemyError
+from urllib.parse import quote_plus
 
 
-# TODO: PostgreSQL in Server
 # TODO: 整理代码，统一接口
-
 def get_formated_time():
     current_time = datetime.datetime.now()
     return current_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///c:\\sqlite3\\asset.db'
-app.secret_key = '\xc9ixnRb\xe40\xd4\xa5\x7f\x03\xd0y6\x01\x1f\x96\xeao+\x8a\x9f\xe4'
+
+# 要连接的数据库信息
+username = 'admin_ww'
+password = 'Password@123.'
+host = '10.67.124.22'
+port = '5432'
+database_name = 'ams'
+
+# 对密码进行 URL 编码
+encoded_password = quote_plus(password)
+
+# 配置 SQLAlchemy 连接数据库的 URL
+connection_uri = f'postgresql://{username}:{encoded_password}@{host}:{port}/{database_name}'
+app.config['SQLALCHEMY_DATABASE_URI'] = connection_uri
+
+# 添加 SECRET_KEY
+app.config['SECRET_KEY'] = '%$#$GReu#!RAvdoO23RmDFdSC'
 db = SQLAlchemy(app)
 
+#全局变量 生成log
 log_str = ""
 
-
-# 新建模型 用户、管理员、资产的ORM
-class User(db.Model):  # 表名将会是 user（自动生成，小写）
-    id = db.Column(db.Integer, primary_key=True)  # 主键
-    name = db.Column(db.String(20))
-    email = db.Column(db.String(60))
-    password = db.Column(db.String(80))
-
-
-class Admin(db.Model):  # table admin
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
-    email = db.Column(db.String(60))
-    password = db.Column(db.String(80))
+class User(db.Model):  # table user
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+    password = db.Column(db.String(255))
 
 
 class Asset(db.Model):  # table asset
-    AssetID = db.Column(db.String, primary_key=True)
-    AssetType = db.Column(db.String)
-    Type = db.Column(db.String)
-    Status = db.Column(db.String)
-    Cost = db.Column(db.Integer)
-    Owner = db.Column(db.String)
-    ProjectID = db.Column(db.String)
-    Project = db.Column(db.String)
-    Rack = db.Column(db.String)
-    BarCode = db.Column(db.String)
-    SN = db.Column(db.String)
-    Model = db.Column(db.String)
-    BMChostname = db.Column(db.String)
-    IP = db.Column(db.String)
-    Location = db.Column(db.String)
-    User = db.Column(db.String)
-    Vendor = db.Column(db.String)
-    Comments = db.Column(db.String)
-    Quantity = db.Column(db.Integer)
-    Bandwidth = db.Column(db.Integer)
-    ChangeTime = db.Column(db.String)
-    ReleaseTime = db.Column(db.String)
-
+    assetid = db.Column(db.String, primary_key=True)
+    assettype = db.Column(db.String)
+    barcode = db.Column(db.String)
+    bandwidth = db.Column(db.Integer)
+    bmchostname = db.Column(db.String)
+    cost = db.Column(db.Integer)
+    comments = db.Column(db.String)
+    ip = db.Column(db.String)
+    type = db.Column(db.String)
+    location = db.Column(db.String)
+    model = db.Column(db.String)
+    owner = db.Column(db.String)
+    projectid = db.Column(db.String)
+    project = db.Column(db.String)
+    rack = db.Column(db.String)
+    sn = db.Column(db.String)
+    status = db.Column(db.String)
+    user = db.Column(db.String)
+    vendor = db.Column(db.String)
+    quantity = db.Column(db.Integer)
+    changetime = db.Column(db.DateTime)
+    releasetime = db.Column(db.DateTime)
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True )
@@ -68,21 +73,97 @@ class Log(db.Model):
     timestamp = db.Column(db.DateTime, default=func.now())
 
 
-def user_login(username, password):
-    current_user = User.query.filter(and_(User.name == username, User.password == password)).first()
+
+def user_login(email, password):
+    current_user = User.query.filter(and_(User.email == email, User.password == password)).first()
     if current_user:
         return True
     else:
         return False
 
 
-def admin_login(email, password):
-    administrator = Admin.query.filter(and_(Admin.email == email, Admin.password == password)).first()
-    if administrator:
-        return True
-    else:
-        return False
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        email = request.form.get('Email')
+        password = request.form.get('Password')
+        print('data from Server', email, password)
+        # 访问数据库，查询验证数据
+        with app.app_context():
+            if user_login(email, password):
+                flash("用户" + email + "登录成功")
+                return redirect('/user')
+            else:
+                flash("用户名或密码错误")
+    return render_template('auth-cover-login.html')
 
+
+# 添加新用户
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['Username']
+        email = request.form['Email']
+        password = request.form['Password']
+        # 判断用户是否已经存在
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            response = {
+                "status": "failed",
+                "message": "User with this email already exists. Please choose a different email."
+            }
+            return jsonify(response)
+        # 创建向数据库添加的新用户信息
+        new_user = User()
+        new_user.email = email
+        new_user.username = username
+        new_user.password = password
+        db.session.add(new_user)
+        db.session.commit()
+        response = {
+            "status": "success",
+            "message": "Registration successful!"
+        }
+        return jsonify(response)
+    return render_template('auth-cover-register.html')
+
+
+# 用户首页展示
+@app.route('/user', methods=['GET', 'POST'])
+def user_profile():
+    try:
+        # 将所有列名存到列表里
+        all_columns = [column.key for column in Asset.__table__.columns]
+        all_assets = Asset.query.all()
+        # 将查询到的数据转换为列表的列表格式
+        table_data = []
+        for asset in all_assets:
+            row_data = [getattr(asset, column) for column in all_columns]
+            table_data.append(row_data)
+    except Exception as e:
+        # 处理可能发生的错误, 打印错误信息
+        return jsonify({'error': str(e)}), 500
+    return render_template('ecommerce-products.html', table_data=table_data, table_columns=all_columns)
+
+
+@app.route('/forgotPassword', methods=['GET', 'POST'])
+def forgotPassword():
+    if request.method == 'POST':
+        user_email = request.form['Email']
+        new_password = request.form['Password']
+        # existing user
+        exist_user = User.query.filter_by(email=user_email).first()
+        if exist_user:
+            exist_user.password = new_password
+        else:
+            response = {
+                "status": "failed",
+                "message": "User with this email doesn't exist, please check your email or sign up a new one."
+            }
+            return jsonify(response)
+    return render_template('auth-cover-forgot-password.html')
+
+"""
 # 添加listener,对增删改查的操作监听并写入log表
 @event.listens_for(db.session, 'before_flush')
 def log_changes(session, flush_context, instances):
@@ -105,95 +186,11 @@ def log_changes(session, flush_context, instances):
                 log_str += f" change {attr.key} from {attr.history.deleted[0]} to {attr.value}"
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == "POST":
-        email = request.form.get('Email')
-        password = request.form.get('Password')
-        print('data from Server', email, password)
-        # 访问数据库，查询验证数据
-        with app.app_context():
-            if admin_login(email, password):
-                flash("管理员" + email + "登录成功")
-                return redirect('/admin')
-            elif user_login(email, password):
-                flash("用户" + email + "登录成功")
-                return redirect('/user')
-            else:
-                flash("用户名或密码错误")
-    return render_template('auth-cover-login.html')
 
 
-# TODO 忘记密码，修改用户密码
-@app.route('/forgotPassword', methods=['GET', 'POST'])
-def forgotPassword():
-    if request.method == 'POST':
-        user_email = request.form['Email']
-        new_password = request.form['Password']
-        # existing user
-        exist_user = Admin.query.filter_by(email=user_email).first()
-        if exist_user:
-            exist_user.password = new_password
-        else:
-            response = {
-                "status": "failed",
-                "message": "User with this email doesn't exist, please check your email or sign up a new one."
-            }
-            return jsonify(response)
-    return render_template('auth-cover-forgot-password.html')
 
 
-# 添加新用户
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['Username']
-        email = request.form['Email']
-        password = request.form['Password']
-        # 判断用户是否已经存在
-        existing_user = Admin.query.filter_by(email=email).first()
-        if existing_user:
-            response = {
-                "status": "failed",
-                "message": "User with this email already exists. Please choose a different email."
-            }
-            return jsonify(response)
-        # 创建向数据库添加的新用户信息
-        new_user = Admin()
-        new_user.email = email
-        new_user.name = username
-        new_user.password = password
-        db.session.add(new_user)
-        db.session.commit()
-        response = {
-            "status": "success",
-            "message": "Registration successful!"
-        }
-        return jsonify(response)
-    return render_template('auth-cover-register.html')
 
-
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
-    try:
-        # 将所有列名存到列表里
-        all_columns = [column.key for column in Asset.__table__.columns]
-        all_assets = Asset.query.all()
-        # 将查询到的数据转换为列表的列表格式
-        table_data = []
-        for asset in all_assets:
-            row_data = [getattr(asset, column) for column in all_columns]
-            table_data.append(row_data)
-    except Exception as e:
-        # 处理可能发生的错误, 打印错误信息
-        return jsonify({'error': str(e)}), 500
-    return render_template('ecommerce-products.html', table_data=table_data, table_columns=all_columns)
-
-
-# 登录成功，跳转到用户页面
-@app.route('/user', methods=['GET', 'POST'])
-def user():
-    return render_template('user.html')
 
 
 # TODO: try-except
@@ -373,6 +370,7 @@ def delete_record():
     except Exception as e:
         return jsonify({'message': '删除失败：' + str(e)}), 500
 
+"""
 
 if __name__ == '__main__':
     app.run(debug=True)
