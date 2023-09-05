@@ -73,7 +73,6 @@ class Log(db.Model):
     timestamp = db.Column(db.DateTime, default=func.now())
 
 
-
 def user_login(email, password):
     current_user = User.query.filter(and_(User.email == email, User.password == password)).first()
     if current_user:
@@ -163,6 +162,45 @@ def forgotPassword():
             return jsonify(response)
     return render_template('auth-cover-forgot-password.html')
 
+# 增加新的资产记录
+@app.route('/add_record', methods=['POST'])
+def add_record():
+    try:
+        data = request.json        # 从request中获取数据
+        new_asset = Asset()
+        new_asset.assetid = data.get('AssetID')
+        new_asset.barcode = data.get('BarCode', '')
+        new_asset.bandwidth = data.get('Bandwidth', 0)
+        new_asset.bmchostname = data.get('BMChostname', '')
+        new_asset.cost = data.get('Cost', 0)
+        new_asset.comments = data.get('Comments', '')
+        new_asset.ip = data.get('IP', '')
+        new_asset.owner= data.get('Owner', '(admin)')
+        new_asset.project = data.get('Project', '')
+        new_asset.sn = data.get('SN', '')
+        new_asset.type = data.get('Type', '')
+        new_asset.user = data.get('User', '')
+        new_asset.assettype = data.get('AssetType', '')
+        new_asset.status = data.get('Status', '')
+        new_asset.location = data.get('Location', '')
+        new_asset.model = data.get('Model', '')
+        new_asset.rack = data.get('Rack', '')
+        new_asset.quantity = data.get('Quantity', 0)
+        new_asset.vendor = data.get('Vendor', '')
+        new_asset.releasetime = data.get('ReleaseTime', '')
+        new_asset.projectid = data.get('ProjectID', '')
+        db.session.add(new_asset)
+        db.session.commit()
+        new_log = Log()
+        new_log.log = log_str
+        db.session.add(new_log)
+        db.session.commit()
+    except Exception as e:
+        return jsonify({'message': '更新失败：' + str(e)}), 500
+    data = {'message': 'Records are added successfully'}
+    return Response(json.dumps(data), status=200, mimetype='application/json')
+
+
 """
 # 添加listener,对增删改查的操作监听并写入log表
 @event.listens_for(db.session, 'before_flush')
@@ -187,51 +225,6 @@ def log_changes(session, flush_context, instances):
 
 
 
-
-
-
-
-
-
-# TODO: try-except
-@app.route('/add_record', methods=['POST'])
-def add_record():
-    try:
-        data = request.json        # 从request中获取数据
-        new_asset = Asset()
-        new_asset.AssetID = data.get('AssetID')
-        new_asset.BarCode = data.get('BarCode', '')
-        new_asset.Bandwidth = data.get('Bandwidth', 0)
-        new_asset.BMChostname = data.get('BMChostname', '')
-        new_asset.Cost = data.get('Cost', 0)
-        new_asset.Comments = data.get('Comments', '')
-        new_asset.IP = data.get('IP', '')
-        new_asset.Owner = data.get('Owner', '(admin)')
-        new_asset.Project = data.get('Project', '')
-        new_asset.SN = data.get('SN', '')
-        new_asset.Type = data.get('Type', '')
-        new_asset.User = data.get('User', '')
-        new_asset.AssetType = data.get('AssetType', '')
-        new_asset.Status = data.get('Status', '')
-        new_asset.Location = data.get('Location', '')
-        new_asset.Model = data.get('Model', '')
-        new_asset.Rack = data.get('Rack', '')
-        new_asset.Quantity = data.get('Quantity', 0)
-        new_asset.Vendor = data.get('Vendor', '')
-        new_asset.ReleaseTime = data.get('ReleaseTime', '')
-        new_asset.ProjectID = data.get('ProjectID', '')
-        change_time = get_formated_time()
-        new_asset.ChangeTime = change_time
-        db.session.add(new_asset)
-        db.session.commit()
-        new_log = Log()
-        new_log.log = log_str
-        db.session.add(new_log)
-        db.session.commit()
-    except Exception as e:
-        return jsonify({'message': '更新失败：' + str(e)}), 500
-    data = {'message': 'Records are added successfully'}
-    return Response(json.dumps(data), status=200, mimetype='application/json')
 
 
 @app.route('/query_asset', methods=['POST', 'GET'])
