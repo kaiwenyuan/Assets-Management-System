@@ -66,6 +66,7 @@ class Asset(db.Model):  # table asset
     quantity = db.Column(db.Integer)
     changetime = db.Column(db.DateTime)
     releasetime = db.Column(db.DateTime)
+    serverid = db.Column(db.String)
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True )
@@ -189,6 +190,7 @@ def add_record():
         new_asset.vendor = data.get('Vendor', '')
         new_asset.releasetime = data.get('ReleaseTime', '')
         new_asset.projectid = data.get('ProjectID', '')
+        new_asset.serverid = data.get('ServerID', '')
         db.session.add(new_asset)
         db.session.commit()
         new_log = Log()
@@ -201,35 +203,10 @@ def add_record():
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
 
-"""
-# 添加listener,对增删改查的操作监听并写入log表
-@event.listens_for(db.session, 'before_flush')
-def log_changes(session, flush_context, instances):
-    global log_str
-    log_str = ""
-    for obj in session.new:
-        if isinstance(obj, Asset):
-            log_str = f"Add asset_id: {obj.AssetID}"
-    for obj in session.deleted:
-        if isinstance(obj, Asset):
-            if log_str:
-                log_str = f"Deleted asset_id: {obj.AssetID}"
-            else:
-                log_str += f",Deleted asset_id: {obj.AssetID}"
-    for obj in session.dirty:
-        if isinstance(obj, Asset):
-            log_str = f"Update asset_id: {obj.AssetID}"
-        for attr in db.inspect(obj).attrs:
-            if attr.history.has_changes():
-                log_str += f" change {attr.key} from {attr.history.deleted[0]} to {attr.value}"
-
-
-
-
-
 @app.route('/query_asset', methods=['POST', 'GET'])
 def query_record():
     data = request.json
+    assetid_ = data.get('AssetID', '')
     type_ = data.get('Type', '')
     status_ = data.get('Status', '')
     owner_ = data.get('Owner', '')
@@ -239,51 +216,53 @@ def query_record():
 
 # 复选条件，如果输入了该条件，将属性加入选择条件的列表
     conditions = []
+    if assetid_:
+        conditions.append(Asset.assetid == assetid_)
     if type_:
-        conditions.append(Asset.Type == type_)
+        conditions.append(Asset.type == type_)
     if status_:
-        conditions.append(Asset.Status == status_)
+        conditions.append(Asset.status == status_)
     if owner_:
-        conditions.append(Asset.Owner == owner_)
+        conditions.append(Asset.owner == owner_)
     if project_:
-        conditions.append(Asset.Project == project_)
+        conditions.append(Asset.project == project_)
     if sn_:
-        conditions.append(Asset.SN == sn_)
+        conditions.append(Asset.sn == sn_)
     if barcode_:
-        conditions.append(Asset.BarCode == barcode_)
+        conditions.append(Asset.barcode == barcode_)
 
     # 查询列表包含的条件的记录
     records = Asset.query.filter(and_(*conditions)).all()
     asset_list = []
     for asset_ in records:
         record_data = {
-            'AssetID': asset_.AssetID,
-            'Type': asset_.Type,
-            'Status': asset_.Status,
-            'Cost': asset_.Cost,
-            'Owner': asset_.Owner,
-            'ProjectID': asset_.ProjectID,
-            'Project': asset_.Project,
-            'Rack': asset_.Rack,
-            'BarCode': asset_.BarCode,
-            'SN': asset_.SN,
-            'Model': asset_.Model,
-            'BMChostname': asset_.BMChostname,
-            'IP': asset_.IP,
-            'ChangeTime': asset_.ChangeTime,
-            'Location': asset_.Location,
-            'ReleaseTime': asset_.ReleaseTime,
-            'User': asset_.User,
-            'AssetType': asset_.AssetType,
-            'Vendor': asset_.Vendor,
-            'Comments': asset_.Comments,
-            'Quantity': asset_.Quantity,
-            'Bandwidth': asset_.Bandwidth,
+            'AssetID': asset_.assetid,
+            'Type': asset_.type,
+            'Status': asset_.status,
+            'Cost': asset_.cost,
+            'Owner': asset_.owner,
+            'ProjectID': asset_.projectid,
+            'Project': asset_.project,
+            'Rack': asset_.rack,
+            'BarCode': asset_.barcode,
+            'SN': asset_.sn,
+            'Model': asset_.model,
+            'BMChostname': asset_.bmchostname,
+            'IP': asset_.ip,
+            'ChangeTime': asset_.changetime,
+            'Location': asset_.location,
+            'ReleaseTime': asset_.releasetime,
+            'User': asset_.user,
+            'AssetType': asset_.assettype,
+            'Vendor': asset_.vendor,
+            'Comments': asset_.comments,
+            'Quantity': asset_.quantity,
+            'Bandwidth': asset_.bandwidth,
+            'ServerID':asset_.serverid,
             # 添加其他字段...
         }
         asset_list.append(record_data)
     return jsonify(asset_list)
-
 
 @app.route('/update_asset', methods=['POST'])
 def update_record():
@@ -342,7 +321,7 @@ def delete_record():
         assetid_list = data.get('assetid_list', [])
         if not assetid_list:
             return jsonify({'message': '删除失败，未选中信息'}), 400
-        records = Asset.query.filter(Asset.AssetID.in_(assetid_list)).all()
+        records = Asset.query.filter(Asset.assetid.in_(assetid_list)).all()
         for record in records:
             db.session.delete(record)
         db.session.commit()
@@ -363,7 +342,28 @@ def delete_record():
     except Exception as e:
         return jsonify({'message': '删除失败：' + str(e)}), 500
 
-"""
+
+# 添加listener,对增删改查的操作监听并写入log表
+@event.listens_for(db.session, 'before_flush')
+def log_changes(session, flush_context, instances):
+    global log_str
+    log_str = ""
+    for obj in session.new:
+        if isinstance(obj, Asset):
+            log_str = f"Add asset_id: {obj.AssetID}"
+    for obj in session.deleted:
+        if isinstance(obj, Asset):
+            if log_str:
+                log_str = f"Deleted asset_id: {obj.AssetID}"
+            else:
+                log_str += f",Deleted asset_id: {obj.AssetID}"
+    for obj in session.dirty:
+        if isinstance(obj, Asset):
+            log_str = f"Update asset_id: {obj.AssetID}"
+        for attr in db.inspect(obj).attrs:
+            if attr.history.has_changes():
+                log_str += f" change {attr.key} from {attr.history.deleted[0]} to {attr.value}"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

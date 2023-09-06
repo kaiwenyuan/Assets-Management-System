@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -581,11 +581,478 @@
           <div class="col-auto">
             <div class="d-flex align-items-center gap-2 justify-content-lg-end">
                <button class="btn btn-light px-4" onclick="exportToExcel()"><i class="bi bi-box-arrow-right me-2"></i>Export</button>
-               <button class="btn btn-primary px-4" ><i class="bi bi-plus-lg me-2"></i>Add Product</button>
-               <button class="btn btn-primary px-4" >Delete Product</button>
+
+              <div class="col">
+                <button type="button" class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#addAssetModal"><i class="bi bi-plus-lg me-2"></i>Add Asset</button>
+                <!-- Modal -->
+                <div class="modal fade" id="addAssetModal" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Add Asset</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="container">
+
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addAssetID" class="form-label">AssetID:</label>
+                              <input type="text" class="form-control border-3" id="addAssetID" style="width: 225px;" placeholder="HC0001">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addAssetType" class="form-label">AssetType:</label>
+                              <input type="text" class="form-control border-3" id="addAssetType" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addType" class="form-label">Type:</label>
+                              <input type="text" class="form-control border-3" id="addType" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addStatus" class="form-label">Status:</label>
+                              <input type="text" class="form-control border-3" id="addStatus" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addCost" class="form-label">Cost:</label>
+                              <input type="text" class="form-control border-3" id="addCost" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addOwner" class="form-label">Owner:</label>
+                              <input type="text" class="form-control border-3" id="addOwner" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addProjectID" class="form-label">ProjectID:</label>
+                              <input type="text" class="form-control border-3" id="addProjectID" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addProject" class="form-label">Project:</label>
+                              <input type="text" class="form-control border-3" id="addProject" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addRack" class="form-label">Rack:</label>
+                              <input type="text" class="form-control border-3" id="addRack" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addBarCode" class="form-label">BarCode:</label>
+                              <input type="text" class="form-control border-3" id="addBarCode" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addSN" class="form-label">SN:</label>
+                              <input type="text" class="form-control border-3" id="addSN" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addModel" class="form-label">Model:</label>
+                              <input type="text" class="form-control border-3" id="addModel" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addBMChostname" class="form-label">BMChostname:</label>
+                              <input type="text" class="form-control border-3" id="addBMChostname" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addIP" class="form-label">IP:</label>
+                              <input type="text" class="form-control border-3" id="addIP" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addLocation" class="form-label">Location:</label>
+                              <input type="text" class="form-control border-3" id="addLocation" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addUser" class="form-label">User:</label>
+                              <input type="text" class="form-control border-3" id="addUser" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addVendor" class="form-label">Vendor:</label>
+                              <input type="text" class="form-control border-3" id="addVendor" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addComments" class="form-label">Comments:</label>
+                              <input type="text" class="form-control border-3" id="addComments" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addQuantity" class="form-label">Quantity:</label>
+                              <input type="text" class="form-control border-3" id="addQuantity" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addChangeTime" class="form-label">ChangeTime:</label>
+                              <input type="text" class="form-control border-3" id="addChangeTime" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addReleaseTime" class="form-label">ReleaseTime:</label>
+                              <input type="text" class="form-control border-3" id="addReleaseTime" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-center">
+                            <div class="col-12">
+                              <label for="addBandwidth" class="form-label">Bandwidth:</label>
+                              <input type="text" class="form-control border-3" id="addBandwidth" style="width: 225px;" placeholder="...">
+                            </div>
+                          </div>
+                      </div>
+                      </div>
+                      <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveAsset">Save</button>
+                        <button type="button" class="btn btn-primary" id="addAsset">Submit & Next</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div><!--end row-->
+
+       <div class="col">
+         <div class="modal fade" id="editAssetModal" tabindex="-1" aria-hidden="true">
+           <div class="modal-dialog modal-dialog-scrollable">
+             <div class="modal-content">
+               <div class="modal-header">
+                 <h5 class="modal-title">Edit Asset Information</h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+
+                 <div class="container">
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editAssetID" class="form-label">AssetID:</label>
+                       <input type="text" class="form-control border-3" id="editAssetID" style="width: 225px;" placeholder="HC0001">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editAssetType" class="form-label">AssetType:</label>
+                       <input type="text" class="form-control border-3" id="editAssetType" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editType" class="form-label">Type:</label>
+                       <input type="text" class="form-control border-3" id="editType" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editStatus" class="form-label">Status:</label>
+                       <input type="text" class="form-control border-3" id="editStatus" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editCost" class="form-label">Cost:</label>
+                       <input type="text" class="form-control border-3" id="editCost" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editOwner" class="form-label">Owner:</label>
+                       <input type="text" class="form-control border-3" id="editOwner" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editProjectID" class="form-label">ProjectID:</label>
+                       <input type="text" class="form-control border-3" id="editProjectID" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editProject" class="form-label">Project:</label>
+                       <input type="text" class="form-control border-3" id="editProject" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editRack" class="form-label">Rack:</label>
+                       <input type="text" class="form-control border-3" id="editRack" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editBarCode" class="form-label">BarCode:</label>
+                       <input type="text" class="form-control border-3" id="editBarCode" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editSN" class="form-label">SN:</label>
+                       <input type="text" class="form-control border-3" id="editSN" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editModel" class="form-label">Model:</label>
+                       <input type="text" class="form-control border-3" id="editModel" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editBMChostname" class="form-label">BMChostname:</label>
+                       <input type="text" class="form-control border-3" id="editBMChostname" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editIP" class="form-label">IP:</label>
+                       <input type="text" class="form-control border-3" id="editIP" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editLocation" class="form-label">Location:</label>
+                       <input type="text" class="form-control border-3" id="editLocation" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editUser" class="form-label">User:</label>
+                       <input type="text" class="form-control border-3" id="editUser" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editVendor" class="form-label">Vendor:</label>
+                       <input type="text" class="form-control border-3" id="editVendor" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editComments" class="form-label">Comments:</label>
+                       <input type="text" class="form-control border-3" id="editComments" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editQuantity" class="form-label">Quantity:</label>
+                       <input type="text" class="form-control border-3" id="editQuantity" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editChangeTime" class="form-label">ChangeTime:</label>
+                       <input type="text" class="form-control border-3" id="editChangeTime" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editReleaseTime" class="form-label">ReleaseTime:</label>
+                       <input type="text" class="form-control border-3" id="editReleaseTime" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editBandwidth" class="form-label">Bandwidth:</label>
+                       <input type="text" class="form-control border-3" id="editBandwidth" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-primary" id="editAsset">Save changes</button>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+
+
+       <div class="col">
+         <div class="modal fade" id="editAssetModal_Search" tabindex="-1" aria-hidden="true">
+           <div class="modal-dialog modal-dialog-scrollable">
+             <div class="modal-content">
+               <div class="modal-header">
+                 <h5 class="modal-title">Edit Asset Information</h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+
+                 <div class="container">
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editAssetID_Search" class="form-label">AssetID:</label>
+                       <input type="text" class="form-control border-3" id="editAssetID_Search" style="width: 225px;" placeholder="HC0001">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editAssetType_Search" class="form-label">AssetType:</label>
+                       <input type="text" class="form-control border-3" id="editAssetType_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editType_Search" class="form-label">Type:</label>
+                       <input type="text" class="form-control border-3" id="editType_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editStatus_Search" class="form-label">Status:</label>
+                       <input type="text" class="form-control border-3" id="editStatus_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editCost_Search" class="form-label">Cost:</label>
+                       <input type="text" class="form-control border-3" id="editCost_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editOwner_Search" class="form-label">Owner:</label>
+                       <input type="text" class="form-control border-3" id="editOwner_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editProjectID_Search" class="form-label">ProjectID:</label>
+                       <input type="text" class="form-control border-3" id="editProjectID_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editProject_Search" class="form-label">Project:</label>
+                       <input type="text" class="form-control border-3" id="editProject_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editRack_Search" class="form-label">Rack:</label>
+                       <input type="text" class="form-control border-3" id="editRack_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editBarCode_Search" class="form-label">BarCode:</label>
+                       <input type="text" class="form-control border-3" id="editBarCode_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editSN_Search" class="form-label">SN:</label>
+                       <input type="text" class="form-control border-3" id="editSN_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editModel_Search" class="form-label">Model:</label>
+                       <input type="text" class="form-control border-3" id="editModel_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editBMChostname_Search" class="form-label">BMChostname:</label>
+                       <input type="text" class="form-control border-3" id="editBMChostname_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editIP_Search" class="form-label">IP:</label>
+                       <input type="text" class="form-control border-3" id="editIP_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editLocation_Search" class="form-label">Location:</label>
+                       <input type="text" class="form-control border-3" id="editLocation_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editUser_Search" class="form-label">User:</label>
+                       <input type="text" class="form-control border-3" id="editUser_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editVendor_Search" class="form-label">Vendor:</label>
+                       <input type="text" class="form-control border-3" id="editVendor_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editComments_Search" class="form-label">Comments:</label>
+                       <input type="text" class="form-control border-3" id="editComments_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editQuantity_Search" class="form-label">Quantity:</label>
+                       <input type="text" class="form-control border-3" id="editQuantity_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editChangeTime_Search" class="form-label">ChangeTime:</label>
+                       <input type="text" class="form-control border-3" id="editChangeTime_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editReleaseTime_Search" class="form-label">ReleaseTime:</label>
+                       <input type="text" class="form-control border-3" id="editReleaseTime_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                   <div class="row d-flex align-items-center">
+                     <div class="col-12">
+                       <label for="editBandwidth_Search" class="form-label">Bandwidth:</label>
+                       <input type="text" class="form-control border-3" id="editBandwidth_Search" style="width: 225px;" placeholder="...">
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-primary" id="editAsset_Search">Save changes</button>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+
+
 
        <div class="card mt-4">
          <div class="card-body">
@@ -736,7 +1203,8 @@
                  <tr>
                    <td>
                      <!--<input class="form-check-input" type="checkbox">-->
-                     <a href="/login">Apply for it</a>
+                     <a href="#" data-bs-toggle="modal" class="edit-link" data-bs-target="#editAssetModal" data-row-index="{{ loop.index0 }}">Edit</a><br>
+                     <a href="#" data-bs-toggle="modal" class="edit-server-link" data-bs-target="#editServerModal">Edit Server</a>
                    </td>
                    {% for value in row %}
                    <td>{{value}}</td>
@@ -854,6 +1322,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 
+    <!--edit Scripts-->
+    <script src="../static/js/add-asset.js"></script>
+    <script src="../static/js/save-asset.js"></script>
+    <script src="../static/js/auto-fill.js"></script>
+    <script src="../static/js/edit-asset.js"></script>
+    <script src="../static/js/edit-asset-search.js"></script>
+
+
     <script>//主体条件搜索
       var searchButton = document.getElementById("searchButton");
 
@@ -937,14 +1413,32 @@
             return sortedRowData;
           });
           searchBody.innerHTML = '';
-          sortedData.forEach(rowData => {
+          sortedData.forEach((rowData,index) => {
             const row = document.createElement('tr');
-            const checkboxCell = document.createElement('td');
-            const checkbox = document.createElement('input');
-            checkbox.className = 'form-check-input';
-            checkbox.type = 'checkbox';
-            checkboxCell.appendChild(checkbox);
-            row.appendChild(checkboxCell);
+            const editLinksCell = document.createElement('td');
+
+            // 创建包含 Edit 链接的单元格
+            const editLink = document.createElement('a');
+            editLink.href = '#';
+            editLink.classList.add('edit-link-search');
+            editLink.dataset.bsToggle = 'modal';
+            editLink.dataset.bsTarget = '#editAssetModal_Search';
+            editLink.dataset.rowIndex = rowData.rowIndex; // 根据实际情况设置索引
+            editLink.textContent = 'Edit';
+            editLinksCell.appendChild(editLink);
+            editLinksCell.appendChild(document.createElement('br'));
+
+            // 创建包含 Edit Server 链接的单元格
+            const editServerLink = document.createElement('a');
+            editServerLink.href = '#';
+            editServerLink.classList.add('edit-server-link-search');
+            editServerLink.dataset.bsToggle = 'modal';
+            editServerLink.dataset.bsTarget = '#editServerModal';
+            editServerLink.textContent = 'Edit Server';
+            editLinksCell.appendChild(editServerLink);
+            row.appendChild(editLinksCell);
+
+            editLink.dataset.rowIndex = index;
 
             sortedColumns.forEach(column => {
               const cell = document.createElement('td');
@@ -955,6 +1449,7 @@
         });
           searchBody.appendChild(fragment);
           alert("Success!");
+          initializeEditLink();
       }).catch(error => {
           console.error("Error:", error);
         });
@@ -1112,5 +1607,6 @@
         }
       }
     </script>
+
   </body>
 </html>
