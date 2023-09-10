@@ -1,17 +1,13 @@
-import json, psycopg2
+import json
 import datetime
 from flask import Flask, render_template, request, redirect, flash, Response, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import and_, DateTime, event, func
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import and_, event, func
+from sqlalchemy.exc import SQLAlchemyError, NoResultFound
 from urllib.parse import quote_plus
 
 
 # TODO: 整理代码，统一接口
-def get_formated_time():
-    current_time = datetime.datetime.now()
-    return current_time.strftime('%Y-%m-%d %H:%M:%S')
-
 
 app = Flask(__name__)
 
@@ -71,16 +67,16 @@ class Asset(db.Model):  # table asset
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True )
     log = db.Column(db.String)
+    assetid = db.Column(db.String)
     timestamp = db.Column(db.DateTime, default=func.now())
 
-
+# Verify username and password from DB
 def user_login(email, password):
     current_user = User.query.filter(and_(User.email == email, User.password == password)).first()
     if current_user:
         return True
     else:
         return False
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -98,7 +94,7 @@ def login():
     return render_template('auth-cover-login.html')
 
 
-# 添加新用户
+# Register new user
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -128,7 +124,7 @@ def register():
     return render_template('auth-cover-register.html')
 
 
-# 用户首页展示
+# User profile, display Asset Information in Paginated Data Format
 @app.route('/user', methods=['GET', 'POST'])
 def user_profile():
     try:
@@ -193,6 +189,7 @@ def add_record():
         new_asset.serverid = data.get('ServerID', '')
         db.session.add(new_asset)
         db.session.commit()
+
         new_log = Log()
         new_log.log = log_str
         db.session.add(new_log)
@@ -293,9 +290,6 @@ def update_record():
             'ReleaseTime': ''
         }
 
-        change_time = get_formated_time()
-        record.ChangeTime = change_time
-
         for attr, default_value in attributes.items():
             new_value = data.get(attr, default_value)
             setattr(record, attr, new_value)
@@ -325,7 +319,6 @@ def delete_record():
         for record in records:
             db.session.delete(record)
         db.session.commit()
-
         # TODO: add into log table
         log_list = log_str.split(',')
         for log in log_list:
@@ -347,22 +340,37 @@ def delete_record():
 @event.listens_for(db.session, 'before_flush')
 def log_changes(session, flush_context, instances):
     global log_str
-    log_str = ""
+    log_str = ''
     for obj in session.new:
         if isinstance(obj, Asset):
             log_str = f"Add asset_id: {obj.assetid}"
     for obj in session.deleted:
         if isinstance(obj, Asset):
+            # TODO 删除的记录在log写入整条数据
             if log_str:
-                log_str = f"Deleted asset_id: {obj.assetid}"
-            else:
+                # 如果有不止一条资产需要删除
                 log_str += f",Deleted asset_id: {obj.assetid}"
+            else:
+                log_str = f"Deleted record: {obj.assetid}"
     for obj in session.dirty:
         if isinstance(obj, Asset):
             log_str = f"Update asset_id: {obj.assetid}"
         for attr in db.inspect(obj).attrs:
             if attr.history.has_changes():
                 log_str += f" change {attr.key} from {attr.history.deleted[0]} to {attr.value}"
+
+@app.route('/manageDevices', methods=['POST'])
+def manageDevices():
+    data = request.json
+    serverName = data.get('Barcode')
+    asset_record = Asset.query.filter_by(barcode=serverName).first()
+    serverID = asset_record.serverid
+    try:
+        cpu_ = Asset.query.filter(and_(Asset.type == "CPU", Asset.serverid == serverID)).all()
+        memory_ = Asset.query.filter(and_(Asset.type == "Memory", Asset.serverid == serverID)).all()
+    except NoResultFound:
+        # 如果没有找到匹配的记录，你可以在这里处理异常
+        print("没有找到匹配的记录")
 
 
 if __name__ == '__main__':
