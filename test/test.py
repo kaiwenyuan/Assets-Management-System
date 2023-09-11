@@ -3,7 +3,7 @@ import time
 
 
 def woshishabi():
-    print("wo bu shi sha bi")
+    print("hello world!")
 
 # 定义要测试的 URL
 url = 'http://localhost:5000/update_asset'
