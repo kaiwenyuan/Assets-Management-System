@@ -172,7 +172,7 @@ def add_record():
         new_asset.cost = data.get('Cost', 0)
         new_asset.comments = data.get('Comments', '')
         new_asset.ip = data.get('IP', '')
-        new_asset.owner= data.get('Owner', '(admin)')
+        new_asset.owner = data.get('Owner', '(admin)')
         new_asset.project = data.get('Project', '')
         new_asset.sn = data.get('SN', '')
         new_asset.type = data.get('Type', '')
@@ -184,12 +184,11 @@ def add_record():
         new_asset.rack = data.get('Rack', '')
         new_asset.quantity = data.get('Quantity', 0)
         new_asset.vendor = data.get('Vendor', '')
-        new_asset.releasetime = data.get('ReleaseTime', '')
+        new_asset.releasetime = data.get('ReleaseTime', None)
         new_asset.projectid = data.get('ProjectID', '')
         new_asset.serverid = data.get('ServerID', '')
         db.session.add(new_asset)
         db.session.commit()
-
         new_log = Log()
         new_log.log = log_str
         db.session.add(new_log)
@@ -341,20 +340,25 @@ def delete_record():
 def log_changes(session, flush_context, instances):
     global log_str
     log_str = ''
+    # Add
     for obj in session.new:
         if isinstance(obj, Asset):
-            log_str = f"Add asset_id: {obj.assetid}"
+            log_str = f"ADD ASSET asset_id: {obj.assetid}, server_id: {obj.serverid}, asset_type: {obj.assettype}, barcode: {obj.barcode}, status: {obj.status}," \
+                      f"project: {obj.project}, ip: {obj.ip}, model: {obj.model}, owner: {obj.owner}, rack: {obj.rack}, SN: {obj.sn}, " \
+                      f"owner: {obj.owner},  user: {obj.user}, vendor: {obj.vendor}, change_time: {obj.changetime}, release_time: {obj.releasetime}" \
+                      f"type: {obj.type}, bmchostname: {obj.bmchostname}, bandwidth: {obj.bandwidth}, location: {obj.location}"
+    # Delete
     for obj in session.deleted:
         if isinstance(obj, Asset):
-            # TODO 删除的记录在log写入整条数据
             if log_str:
-                # 如果有不止一条资产需要删除
-                log_str += f",Deleted asset_id: {obj.assetid}"
+                # more than one asset record needs to be deleted
+                log_str += f",DELETE asset_id: {obj.assetid}"
             else:
-                log_str = f"Deleted record: {obj.assetid}"
+                log_str = f" DELETE record: {obj.assetid}"
+    # Update
     for obj in session.dirty:
         if isinstance(obj, Asset):
-            log_str = f"Update asset_id: {obj.assetid}"
+            log_str = f"UPDATE asset_id: {obj.assetid}"
         for attr in db.inspect(obj).attrs:
             if attr.history.has_changes():
                 log_str += f" change {attr.key} from {attr.history.deleted[0]} to {attr.value}"
@@ -369,7 +373,7 @@ def manageDevices():
         cpu_ = Asset.query.filter(and_(Asset.type == "CPU", Asset.serverid == serverID)).all()
         memory_ = Asset.query.filter(and_(Asset.type == "Memory", Asset.serverid == serverID)).all()
     except NoResultFound:
-        # 如果没有找到匹配的记录，你可以在这里处理异常
+        # 如果没有找到匹配的记录，在这里处理异常
         print("没有找到匹配的记录")
 
 
